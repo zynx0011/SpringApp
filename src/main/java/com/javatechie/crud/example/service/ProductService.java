@@ -16,6 +16,10 @@ public class ProductService {
         return repository.save(product);
     }
 
+    public List<Product> searchByName(String keyword) {
+        return repository.findByNameContainingIgnoreCase(keyword);
+    }
+
     public List<Product> saveProducts(List<Product> products) {
         return repository.saveAll(products);
     }
@@ -44,6 +48,5 @@ public class ProductService {
         existingProduct.setPrice(product.getPrice());
         return repository.save(existingProduct);
     }
-
 
 }
