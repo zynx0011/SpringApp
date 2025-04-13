@@ -48,6 +48,11 @@ public class ProductController {
         return service.updateProduct(product);
     }
 
+    @GetMapping("/products/search")
+    public List<Product> searchProducts(@RequestParam String keyword) {
+        return service.searchByName(keyword);
+    }
+
     @DeleteMapping("/delete/{id}")
     public String deleteProduct(@PathVariable int id) {
         return service.deleteProduct(id);
