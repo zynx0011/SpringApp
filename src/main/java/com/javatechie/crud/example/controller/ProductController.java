@@ -33,6 +33,11 @@ public class ProductController {
         return service.getProductById(id);
     }
 
+    @GetMapping("/health")
+    public String healthCheck() {
+        return "Service is up and running!";
+    }
+
     @GetMapping("/product/{name}")
     public Product findProductByName(@PathVariable String name) {
         return service.getProductByName(name);
