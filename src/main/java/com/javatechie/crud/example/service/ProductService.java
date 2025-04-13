@@ -41,6 +41,10 @@ public class ProductService {
         return "product removed !! " + id;
     }
 
+    public List<Product> searchByCategoryAndPrice(String category, double min, double max) {
+        return repository.findByCategoryIgnoreCaseAndPriceBetween(category, min, max);
+    }
+
     public Product updateProduct(Product product) {
         Product existingProduct = repository.findById(product.getId()).orElse(null);
         existingProduct.setName(product.getName());

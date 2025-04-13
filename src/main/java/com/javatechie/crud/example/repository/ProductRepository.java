@@ -14,4 +14,5 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
 
     // Advanced search by category and price range
     List<Product> findByCategoryIgnoreCaseAndPriceBetween(String category, double minPrice, double maxPrice);
+
 }
