@@ -3,6 +3,8 @@ package com.javatechie.crud.example.controller;
 import com.javatechie.crud.example.entity.Product;
 import com.javatechie.crud.example.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -57,4 +59,26 @@ public class ProductController {
     public String deleteProduct(@PathVariable int id) {
         return service.deleteProduct(id);
     }
+
+    @GetMapping("/products/advanced-search")
+    public ResponseEntity<?> advancedSearch(
+            @RequestParam(required = false) String category,
+            @RequestParam(required = false) Double minPrice,
+            @RequestParam(required = false) Double maxPrice) {
+        try {
+            if (category == null || minPrice == null || maxPrice == null) {
+                return ResponseEntity.badRequest().body("Missing required parameters");
+            }
+
+            List<Product> results = service.searchByCategoryAndPrice(category, minPrice, maxPrice);
+            if (results.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No products found matching criteria");
+            }
+
+            return ResponseEntity.ok(results);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: " + e.getMessage());
+        }
+    }
+
 }
