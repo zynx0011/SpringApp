@@ -6,7 +6,7 @@ spec:
   selector:
     matchLabels:
       app: springboot-k8s-mysql
-  replicas: 3
+  replicas: 2
   template:
     metadata:
       labels:
@@ -14,46 +14,43 @@ spec:
     spec:
       containers:
         - name: springboot-crud-k8s
-          image: sayantan2k21/spring-boot-crud-mysql-k8s-example-2:v1
+          image: zynx01/spring_project:v1
           ports:
             - containerPort: 9191
-          env:   # Setting Enviornmental Variables
-            - name: DB_HOST   # Setting Database host address from configMap
-              valueFrom :
-                configMapKeyRef :
-                  name : db-config
-                  key :  host
-
-            - name: DB_NAME  # Setting Database name from configMap
-              valueFrom :
-                configMapKeyRef :
-                  name : db-config
-                  key :  dbName
-
-            - name: DB_USERNAME  # Setting Database username from Secret
-              valueFrom :
-                secretKeyRef :
-                  name : mysql-secrets
-                  key :  username
-
-            - name: DB_PASSWORD # Setting Database password from Secret
-              valueFrom :
-                secretKeyRef :
-                  name : mysql-secrets
-                  key :  password
+          resources:
+          env:
+            - name: DB_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: db-config
+                  key: host
+            - name: DB_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: db-config
+                  key: dbName
+            - name: DB_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-secrets
+                  key: username
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-secrets
+                  key: password
 
 ---
-
-apiVersion: v1 # Kubernetes API version
-kind: Service # Kubernetes resource kind we are creating
-metadata: # Metadata of the resource kind we are creating
+apiVersion: v1
+kind: Service
+metadata:
   name: springboot-crud-svc
 spec:
   selector:
     app: springboot-k8s-mysql
   ports:
-    - protocol: "TCP"
-      port: 9191 # The port that the service is running on in the cluster
-      targetPort: 9191 # The port exposed by the service
-  type: NodePort # type of the service.
-
+    - protocol: TCP
+      port: 9191 # ClusterIP port (internal)
+      targetPort: 9191 # Container port (app inside pod)
+      nodePort: 30091 # Optional: specify if you want a fixed external port
+  type: NodePort
